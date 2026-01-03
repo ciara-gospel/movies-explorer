@@ -4,7 +4,7 @@ import { movieService } from '../api/movieService';
 import type { Movie } from '../types/movie';
 import MovieGrid from '../components/MovieGrid';
 import Pagination from '../components/Pagination';
-import { SearchX } from 'lucide-react'; // Ajout d'une icône pour le style
+import { SearchX } from 'lucide-react';
 
 const Search = () => {
   const [searchParams] = useSearchParams();
@@ -59,7 +59,7 @@ const Search = () => {
           )}
         </>
       ) : (
-        /* Section "Movie Not Found" */
+        
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <div className="bg-white/5 p-6 rounded-full mb-6">
             <SearchX size={64} className="text-gray-500" />
