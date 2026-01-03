@@ -17,6 +17,14 @@ export const movieService = {
         return data;
     },
 
+    getSeriesDetails: async (id: string): Promise<Movie> => {
+        const { data } = await api.get(`/tv/${id}`);
+        return {
+            ...data,
+            title: data.name,
+        };
+    },
+
     getMovies: async (page = 1): Promise<TMDBResponse> => {
         const { data } = await api.get('/discover/movie', { params: { page } });
         return data;
@@ -24,10 +32,13 @@ export const movieService = {
 
     getSeries: async (page = 1): Promise<TMDBResponse> => {
         const { data } = await api.get('/discover/tv', { params: { page } });
+        
         const transformedResults = data.results.map((item: any) => ({
             ...item,
-            title: item.title || item.name 
+            title: item.name,
+            media_type: 'tv'
         }));
+
         return { ...data, results: transformedResults };
     },
 
