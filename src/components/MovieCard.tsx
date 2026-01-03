@@ -17,7 +17,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
         <img
           src={movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image'}
           alt={movie.title}
-          className="w-full aspect-2/3 object-cover"
+          className="w-full aspect-2/3 object-cover block"
         />
       </Link>
 

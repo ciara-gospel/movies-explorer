@@ -22,11 +22,14 @@ const MovieRow = ({ title, genreId }: MovieRowProps) => {
       </h2>
 
       <div 
-        className="flex gap-6 overflow-x-auto pb-6 cursor-grab active:cursor-grabbing
+        className="flex gap-4 md:gap-6 overflow-x-auto pb-6 cursor-grab active:cursor-grabbing
                    scrollbar-thin scrollbar-track-white/5 scrollbar-thumb-red-600/50 hover:scrollbar-thumb-red-600"
       >
         {movies.map(movie => (
-          <div key={movie.id} className="min-w-260px md:min-w-[320px] transition-transform duration-300 hover:scale-105">
+          <div 
+            key={movie.id} 
+            className="w-[130px] md:w-[280px] shrink-0 transition-transform duration-300 hover:scale-105"
+          >
             <MovieCard movie={movie} />
           </div>
         ))}
