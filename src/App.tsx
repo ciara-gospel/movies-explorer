@@ -1,21 +1,30 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import { MovieProvider } from './context/MovieContext';
-// import Home from './pages/Home';
+import { MovieProvider } from './context/MovieContext';
+import MainLayout from './layouts/MainLayout';
+
+import Home from './pages/Home';
+import Search from './pages/Search';
+import MovieDetails from './pages/MovieDetails';
+import Favorites from './pages/Favorites'; 
+import Movies from './pages/Movies';
+import Series from './pages/Series';
 
 function App() {
   return (
-    // <MovieProvider>
+    <MovieProvider>
       <Router>
-        <div className="min-h-screen bg-[#0F1014] text-white">
-          {/* Navbar ici */}
-          <Routes>
-            <Route path="/" element={<div>Home</div>} />
-            <Route path="/movie/:id" element={<div>Details</div>} />
-            <Route path="/bookmarks" element={<div>Favorites</div>} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="movies" element={<Movies />} />
+            <Route path="series" element={<Series />} />
+            <Route path="search" element={<Search />} />
+            <Route path="movie/:id" element={<MovieDetails />} />
+            <Route path="favorites" element={<Favorites />} />
+          </Route>
+        </Routes>
       </Router>
-    // </MovieProvider>
+    </MovieProvider>
   );
 }
 
