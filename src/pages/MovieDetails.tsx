@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { movieService } from '../api/movieService';
 import type { Movie } from '../types/movie';
 import { Star, Calendar, Bookmark, Play, X } from 'lucide-react';
@@ -7,19 +7,37 @@ import { useMovies } from '../context/MovieContext';
 
 const MovieDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
   const [movie, setMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPlayer, setShowPlayer] = useState(false);
   const { toggleFavorite, isFavorite } = useMovies();
 
+     const isTV = location.pathname.includes('/series') || (movie as any)?.media_type === 'tv';  
   const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
-  const videoUrl = `https://vidsrc.xyz/embed/movie/${id}`;
+  
+  const videoUrl = isTV 
+    ? `https://vidsrc.xyz/embed/tv/${id}` 
+    : `https://vidsrc.xyz/embed/movie/${id}`;
 
   useEffect(() => {
     const fetchDetails = async () => {
       if (!id) return;
       try {
-        const data = await movieService.getMovieDetails(id);
+        setLoading(true);
+        let data;
+        
+        if (location.pathname.includes('/series')) {
+          data = await movieService.getSeriesDetails(id);
+        } else {
+
+          try {
+            data = await movieService.getMovieDetails(id);
+          } catch {
+            data = await movieService.getSeriesDetails(id);
+          }
+        }
+        
         setMovie(data);
       } catch (error) {
         console.error("Error fetching details:", error);
@@ -28,7 +46,7 @@ const MovieDetails = () => {
       }
     };
     fetchDetails();
-  }, [id]);
+  }, [id, location.pathname]);
 
   if (loading) return (
     <div className="h-screen flex items-center justify-center">
@@ -36,7 +54,7 @@ const MovieDetails = () => {
     </div>
   );
   
-  if (!movie) return <div className="text-center py-20 text-white">Movie not found.</div>;
+  if (!movie) return <div className="text-center py-20 text-white">Content not found.</div>;
 
   return (
     <div className="relative min-h-screen -mt-24">
@@ -59,16 +77,21 @@ const MovieDetails = () => {
         </div>
 
         <div className="flex flex-col gap-6">
-          <h1 className="text-5xl font-black text-white">{movie.title}</h1>
+          <div className="space-y-2">
+             <span className="text-red-600 font-bold uppercase tracking-widest text-sm">
+                {isTV ? 'TV Series' : 'Movie'}
+             </span>
+             <h1 className="text-5xl font-black text-white leading-tight">{movie.title}</h1>
+          </div>
           
           <div className="flex flex-wrap items-center gap-6 text-gray-300">
             <div className="flex items-center gap-2 text-yellow-500 font-bold">
               <Star size={20} fill="currentColor" />
-              <span>{movie.vote_average.toFixed(1)} / 10</span>
+              <span>{movie.vote_average?.toFixed(1)} / 10</span>
             </div>
             <div className="flex items-center gap-2">
               <Calendar size={20} />
-              <span>{new Date(movie.release_date).getFullYear()}</span>
+              <span>{new Date(movie.release_date || (movie as any).first_air_date).getFullYear()}</span>
             </div>
           </div>
 
