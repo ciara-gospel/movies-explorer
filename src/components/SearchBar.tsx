@@ -1,33 +1,40 @@
 import { Search as SearchIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
-      setQuery('');
-    }
-  };
+  useEffect(() => {
+    // Stratégie de Debounce
+    const delayDebounceFn = setTimeout(() => {
+      // On lance la recherche dès qu'il y a au moins un caractère
+      if (query.trim().length > 0) {
+        navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+      }
+    }, 400); // 400ms est un bon compromis pour la réactivité
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [query, navigate]);
 
   return (
-    <form onSubmit={handleSearch} className="relative w-full max-w-sm">
+    <div className="relative w-full max-w-sm group">
       <input
         type="text"
         placeholder="Search for a movie..."
-        className="w-full bg-zinc-900 text-sm border border-white/10 rounded-full py-2.5 pl-11 pr-4 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all shadow-inner"
+        className="w-full bg-zinc-900 text-sm border border-white/10 rounded-full py-2.5 pl-11 pr-4 
+                   focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 
+                   transition-all shadow-inner group-focus-within:bg-zinc-800"
         value={query}
+        // Pas besoin de handleSearch séparé, le useEffect s'occupe de tout
         onChange={(e) => setQuery(e.target.value)}
       />
       <SearchIcon 
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" 
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-600 transition-colors" 
         size={18} 
       />
-    </form>
+    </div>
   );
 };
 

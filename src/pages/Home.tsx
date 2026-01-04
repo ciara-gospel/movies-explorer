@@ -4,6 +4,7 @@ import type { Movie } from '../types/movie';
 import Hero from '../components/Hero';
 import MovieCard from '../components/MovieCard';
 import MovieRow from '../components/MovieRow';
+import MovieSkeleton from '../components/MovieSkeleton'; // Import du skeleton
 
 const Home = () => {
   const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
@@ -24,15 +25,47 @@ const Home = () => {
     fetchTrending();
   }, []);
 
-  if (loading) return (
-    <div className="h-screen flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-red-600"></div>
-    </div>
-  );
+  // Affichage des Skeletons pendant le chargement
+  if (loading) {
+    return (
+      <div className="space-y-16 pb-20">
+        {/* Skeleton pour le Hero */}
+        <div className="relative w-full h-[500px] md:h-[600px] bg-zinc-900 animate-pulse rounded-3xl" />
+        
+        <div className="px-4 md:px-10 space-y-16">
+          <section>
+            {/* Skeleton pour le titre de la section */}
+            <div className="h-8 bg-zinc-900 w-48 rounded mb-8 animate-pulse" />
+            
+            {/* Grille de skeletons pour Trending Now */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <MovieSkeleton key={i} />
+              ))}
+            </div>
+          </section>
+          
+          {/* Simulation de deux MovieRows en chargement */}
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="space-y-6">
+               <div className="h-8 bg-zinc-900 w-64 rounded animate-pulse" />
+               <div className="flex gap-4 overflow-hidden">
+                 {[...Array(6)].map((_, j) => (
+                   <div key={j} className="w-[130px] md:w-[240px] shrink-0">
+                     <MovieSkeleton />
+                   </div>
+                 ))}
+               </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-16 pb-20">
-      {trendingMovies.length > 0 && <Hero movie={trendingMovies[0]} />}
+      {trendingMovies.length > 0 && <Hero movies={trendingMovies.slice(0, 20)} />}
       
       <div className="px-4 md:px-10 space-y-16">
         <section>
