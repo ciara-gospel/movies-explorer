@@ -35,10 +35,6 @@ const Navbar = () => {
             <SearchBar />
           </div>
           
-          <div className="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center border border-white/10 cursor-pointer hover:bg-zinc-700 transition">
-            <User size={20} className="text-gray-300" />
-          </div>
-
           <button 
             onClick={toggleMenu}
             className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition"
