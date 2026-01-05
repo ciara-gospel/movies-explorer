@@ -4,7 +4,7 @@ import type { Movie } from '../types/movie';
 import Hero from '../components/Hero';
 import MovieCard from '../components/MovieCard';
 import MovieRow from '../components/MovieRow';
-import MovieSkeleton from '../components/MovieSkeleton'; // Import du skeleton
+import MovieSkeleton from '../components/MovieSkeleton';
 
 const Home = () => {
   const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
@@ -25,19 +25,15 @@ const Home = () => {
     fetchTrending();
   }, []);
 
-  // Affichage des Skeletons pendant le chargement
   if (loading) {
     return (
       <div className="space-y-16 pb-20">
-        {/* Skeleton pour le Hero */}
         <div className="relative w-full h-[500px] md:h-[600px] bg-zinc-900 animate-pulse rounded-3xl" />
         
         <div className="px-4 md:px-10 space-y-16">
           <section>
-            {/* Skeleton pour le titre de la section */}
             <div className="h-8 bg-zinc-900 w-48 rounded mb-8 animate-pulse" />
             
-            {/* Grille de skeletons pour Trending Now */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
               {[...Array(6)].map((_, i) => (
                 <MovieSkeleton key={i} />
@@ -45,7 +41,6 @@ const Home = () => {
             </div>
           </section>
           
-          {/* Simulation de deux MovieRows en chargement */}
           {[...Array(2)].map((_, i) => (
             <div key={i} className="space-y-6">
                <div className="h-8 bg-zinc-900 w-64 rounded animate-pulse" />

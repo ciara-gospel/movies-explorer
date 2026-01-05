@@ -1,4 +1,3 @@
-// src/components/SortFilters.tsx
 interface SortFiltersProps {
   currentSort: string;
   onSortChange: (newSort: string) => void;

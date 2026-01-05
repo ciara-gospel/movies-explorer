@@ -27,6 +27,11 @@ export const movieService = {
     };
   },
 
+  getSeasonDetails: async (seriesId: string, seasonNumber: number) => {
+    const { data } = await api.get(`/tv/${seriesId}/season/${seasonNumber}`);
+    return data;
+  },
+
   getSimilarMovies: async (id: string): Promise<TMDBResponse> => {
     const { data } = await api.get(`/movie/${id}/similar`);
     return data;
@@ -42,13 +47,12 @@ export const movieService = {
     return { ...data, results: transformedResults };
   },
 
-  // CORRECTION : getMovies accepte maintenant page ET sortBy
   getMovies: async (page = 1, sortBy = "popularity.desc"): Promise<TMDBResponse> => {
     const { data } = await api.get("/discover/movie", { 
       params: { 
         page,
         sort_by: sortBy,
-        "vote_count.gte": 100 // Filtre pour une meilleure qualité de résultats
+        "vote_count.gte": 100
       } 
     });
     return data;

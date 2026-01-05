@@ -3,13 +3,13 @@ import { movieService } from '../api/movieService';
 import type { Movie } from '../types/movie';
 import MovieGrid from '../components/MovieGrid';
 import Pagination from '../components/Pagination';
-import SortFilters from '../components/SortFilters'; // Import des filtres
-import MovieSkeleton from '../components/MovieSkeleton'; // Import du skeleton
+import SortFilters from '../components/SortFilters';
+import MovieSkeleton from '../components/MovieSkeleton';
 
 const Series = () => {
   const [series, setSeries] = useState<Movie[]>([]);
   const [page, setPage] = useState(1);
-  const [sortBy, setSortBy] = useState('popularity.desc'); // État pour le tri
+  const [sortBy, setSortBy] = useState('popularity.desc');
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -17,12 +17,10 @@ const Series = () => {
     const fetchSeries = async () => {
       setLoading(true);
       try {
-        // On passe désormais page ET sortBy au service
         const data = await movieService.getSeries(page, sortBy);
         
-        // Note: La transformation s.name -> s.title est déjà gérée dans movieService.ts normalement,
-        // mais on la garde par sécurité si ton service ne le fait pas encore partout.
-        setSeries(data.results); 
+        setSeries(data.results);
+        console.log("series list", data.results)
         setTotalPages(Math.min(data.total_pages, 500));
       } catch (error) {
         console.error("Error fetching series:", error);
@@ -31,11 +29,11 @@ const Series = () => {
       }
     };
     fetchSeries();
-  }, [page, sortBy]); // On recharge si la page OU le tri change
+  }, [page, sortBy]);
 
   const handleSortChange = (newSort: string) => {
     setSortBy(newSort);
-    setPage(1); // On reset à la page 1 lors d'un nouveau tri
+    setPage(1);
   };
 
   return (
@@ -45,7 +43,6 @@ const Series = () => {
           Explore <span className="text-red-600">Series</span>
         </h1>
         
-        {/* Filtres de tri identiques à la page Movies */}
         <SortFilters currentSort={sortBy} onSortChange={handleSortChange} />
       </div>
 

@@ -7,13 +7,11 @@ const SearchBar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Stratégie de Debounce
     const delayDebounceFn = setTimeout(() => {
-      // On lance la recherche dès qu'il y a au moins un caractère
       if (query.trim().length > 0) {
         navigate(`/search?q=${encodeURIComponent(query.trim())}`);
       }
-    }, 400); // 400ms est un bon compromis pour la réactivité
+    }, 200);
 
     return () => clearTimeout(delayDebounceFn);
   }, [query, navigate]);
@@ -27,7 +25,6 @@ const SearchBar = () => {
                    focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 
                    transition-all shadow-inner group-focus-within:bg-zinc-800"
         value={query}
-        // Pas besoin de handleSearch séparé, le useEffect s'occupe de tout
         onChange={(e) => setQuery(e.target.value)}
       />
       <SearchIcon 

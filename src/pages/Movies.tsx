@@ -3,13 +3,13 @@ import { movieService } from '../api/movieService';
 import type { Movie } from '../types/movie';
 import MovieGrid from '../components/MovieGrid';
 import Pagination from '../components/Pagination';
-import SortFilters from '../components/SortFilters'; // Import des filtres
-import MovieSkeleton from '../components/MovieSkeleton'; // Import du skeleton
+import SortFilters from '../components/SortFilters';
+import MovieSkeleton from '../components/MovieSkeleton';
 
 const Movies = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [page, setPage] = useState(1);
-  const [sortBy, setSortBy] = useState('popularity.desc'); // Nouvel état pour le tri
+  const [sortBy, setSortBy] = useState('popularity.desc');
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -17,11 +17,10 @@ const Movies = () => {
     const fetchMovies = async () => {
       setLoading(true);
       try {
-        // On utilise maintenant sortBy dans l'appel API
-        // Note: Assure-toi que getMovies dans ton service accepte le tri ou utilise getMoviesByGenre avec l'ID du genre ou discover
         const data = await movieService.getMovies(page, sortBy); 
         setMovies(data.results);
-        setTotalPages(Math.min(data.total_pages, 500)); // TMDB limite souvent à 500 pages pour le discover
+        console.log(data)
+        setTotalPages(Math.min(data.total_pages, 500));
       } catch (error) {
         console.error("Error fetching movies:", error);
       } finally {
@@ -29,11 +28,11 @@ const Movies = () => {
       }
     };
     fetchMovies();
-  }, [page, sortBy]); // On recharge si la page OU le tri change
+  }, [page, sortBy]);
 
   const handleSortChange = (newSort: string) => {
     setSortBy(newSort);
-    setPage(1); // Très important : on revient à la page 1 quand on change le tri
+    setPage(1);
   };
 
   return (
@@ -43,7 +42,6 @@ const Movies = () => {
           Explore <span className="text-red-600">Movies</span>
         </h1>
         
-        {/* Intégration des filtres de tri */}
         <SortFilters currentSort={sortBy} onSortChange={handleSortChange} />
       </div>
 
