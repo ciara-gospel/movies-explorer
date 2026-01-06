@@ -33,9 +33,10 @@ const MovieDetails = () => {
     if (!id) return;
     try {
       setLoading(true);
+      setMovie(null);
+      setSimilar([]);
       let detailsData: Movie;
       
-      // Utilisation du type TMDBResponse pour éviter l'erreur "never[]"
       let similarData: TMDBResponse = { 
         results: [], 
         page: 1, 
@@ -45,13 +46,11 @@ const MovieDetails = () => {
 
       if (location.pathname.includes("/series")) {
         detailsData = await movieService.getSeriesDetails(id);
-        // On ne remplit pas similarData ici car tu as voulu retirer les séries similaires
       } else {
         try {
           detailsData = await movieService.getMovieDetails(id);
           similarData = await movieService.getSimilarMovies(id);
         } catch {
-          // Fallback au cas où l'ID est une série mais l'URL disait movie
           detailsData = await movieService.getSeriesDetails(id);
         }
       }
@@ -230,7 +229,6 @@ const MovieDetails = () => {
         </div>
       )}
 
-      {/* On n'affiche la section Similar que si ce n'est PAS une série et qu'il y a des résultats */}
       {!isTV && similar.length > 0 && (
         <div className="relative mt-24 px-6 max-w-6xl mx-auto">
           <div className="flex items-center gap-4 mb-8">

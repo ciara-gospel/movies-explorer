@@ -22,13 +22,10 @@ const Search = () => {
       if (!query) return;
       setLoading(true);
       try {
-        // On utilise la recherche multi-critères pour avoir films ET séries
         const data = await movieService.searchMovies(query, currentPage);
         
         const transformedMovies = data.results.map((m: any) => ({
           ...m,
-          // CRUCIAL : Si l'objet a un 'name', c'est une série (tv), sinon c'est un film (movie)
-          // On s'assure que le titre est harmonisé pour l'affichage
           media_type: m.media_type || (m.name ? 'tv' : 'movie'),
           title: m.title || m.name
         }));
@@ -63,7 +60,6 @@ const Search = () => {
         </div>
       ) : results.movies.length > 0 ? (
         <>
-          {/* MovieGrid affichera les MovieCard qui utiliseront le bon media_type pour le lien */}
           <MovieGrid movies={results.movies} />
           
           {results.totalPages > 1 && (
