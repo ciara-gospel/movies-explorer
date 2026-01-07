@@ -39,9 +39,9 @@ const MovieCard = ({ movie }: MovieCardProps) => {
       </button>
 
       <div className="absolute bottom-0 left-0 right-0 p-4 bg-linear-to-t from-black via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <h3 className="text-sm font-bold truncate">{movie.title}</h3>
+        <h3 className="text-sm font-bold truncate">{displayTitle}</h3>
         <div className="flex items-center justify-between mt-2">
-          <span className="text-xs text-gray-400">{movie.release_date?.split('-')[0]}</span>
+          <span className="text-xs text-gray-400">{displayDate}</span>
           <div className="flex items-center gap-1 text-yellow-500 text-xs">
             <Star size={12} fill="currentColor" />
             <span>{movie.vote_average.toFixed(1)}</span>

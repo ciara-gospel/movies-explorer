@@ -29,50 +29,51 @@ const MovieDetails = () => {
     : `https://vidsrc.xyz/embed/movie/${id}`;
 
   useEffect(() => {
-  const fetchAllData = async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      setMovie(null);
-      setSimilar([]);
-      let detailsData: Movie;
-      
-      let similarData: TMDBResponse = { 
-        results: [], 
-        page: 1, 
-        total_pages: 0, 
-        total_results: 0 
-      };
+    const fetchAllData = async () => {
+      if (!id) return;
+      try {
+        setLoading(true);
+        setMovie(null);
+        setSimilar([]);
+        let detailsData: Movie;
 
-      if (location.pathname.includes("/series")) {
-        detailsData = await movieService.getSeriesDetails(id);
-      } else {
-        try {
-          detailsData = await movieService.getMovieDetails(id);
-          similarData = await movieService.getSimilarMovies(id);
-        } catch {
+        let similarData: TMDBResponse = {
+          results: [],
+          page: 1,
+          total_pages: 0,
+          total_results: 0,
+        };
+
+        if (location.pathname.includes("/series")) {
           detailsData = await movieService.getSeriesDetails(id);
+        } else {
+          try {
+            detailsData = await movieService.getMovieDetails(id);
+            similarData = await movieService.getSimilarMovies(id);
+          } catch {
+            detailsData = await movieService.getSeriesDetails(id);
+          }
         }
+
+        setMovie(detailsData);
+        setSimilar(similarData.results.slice(0, 12));
+      } catch (error) {
+        console.error("Error fetching content:", error);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      setMovie(detailsData);
-      setSimilar(similarData.results.slice(0, 12));
-    } catch (error) {
-      console.error("Error fetching content:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchAllData();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}, [id, location.pathname]);
+    fetchAllData();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [id, location.pathname]);
 
   useEffect(() => {
     if (isTV && id && movie) {
-      movieService.getSeasonDetails(id, selectedSeason)
-        .then(data => setEpisodes(data.episodes || []))
-        .catch(err => console.error("Error fetching episodes:", err));
+      movieService
+        .getSeasonDetails(id, selectedSeason)
+        .then((data) => setEpisodes(data.episodes || []))
+        .catch((err) => console.error("Error fetching episodes:", err));
     }
   }, [id, selectedSeason, isTV, movie]);
 
@@ -85,16 +86,21 @@ const MovieDetails = () => {
 
   if (!movie)
     return (
-      <div className="text-center py-20 text-white font-bold">Content not found.</div>
+      <div className="text-center py-20 text-white font-bold">
+        Content not found.
+      </div>
     );
 
   return (
     <div className="relative min-h-screen -mt-24 pb-20 bg-zinc-950 text-white">
-      <button 
+      <button
         onClick={() => navigate(-1)}
         className="fixed top-28 left-6 z-50 flex items-center gap-2 bg-black/40 hover:bg-red-600 backdrop-blur-md text-white px-4 py-2 rounded-xl border border-white/10 transition-all duration-300 group cursor-pointer"
       >
-        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+        <ArrowLeft
+          size={20}
+          className="group-hover:-translate-x-1 transition-transform"
+        />
         <span className="font-bold text-sm uppercase tracking-wider">Back</span>
       </button>
 
@@ -147,7 +153,10 @@ const MovieDetails = () => {
 
           <div className="flex gap-4">
             <button
-              onClick={() => { setSelectedEpisode(1); setShowPlayer(true); }}
+              onClick={() => {
+                setSelectedEpisode(1);
+                setShowPlayer(true);
+              }}
               className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white p-4 md:px-8 md:py-4 rounded-xl font-bold transition cursor-pointer shrink-0"
             >
               <Play fill="white" size={20} />
@@ -162,7 +171,9 @@ const MovieDetails = () => {
                 size={20}
                 fill={isFavorite(movie.id) ? "white" : "none"}
               />
-              <span>{isFavorite(movie.id) ? "In favorites" : "Add to favorites"}</span>
+              <span>
+                {isFavorite(movie.id) ? "In favorites" : "Add to favorites"}
+              </span>
             </button>
           </div>
         </div>
@@ -174,8 +185,8 @@ const MovieDetails = () => {
             <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter">
               Seasons & <span className="text-red-600">Episodes</span>
             </h2>
-            
-            <select 
+
+            <select
               value={selectedSeason}
               onChange={(e) => {
                 setSelectedSeason(Number(e.target.value));
@@ -192,39 +203,69 @@ const MovieDetails = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {episodes.map((episode: any) => (
-              <button 
-                key={episode.id} 
-                onClick={() => {
-                  setSelectedEpisode(episode.episode_number);
-                  setShowPlayer(true);
-                }}
-                className="flex gap-4 bg-white/5 p-3 rounded-2xl border border-white/5 hover:bg-white/10 transition group text-left"
-              >
-                <div className="relative w-28 h-16 shrink-0 rounded-lg overflow-hidden bg-zinc-800">
-                  {episode.still_path ? (
-                    <img 
-                      src={`https://image.tmdb.org/t/p/w300${episode.still_path}`} 
-                      className="w-full h-full object-cover" 
-                      alt={episode.name}
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full text-[8px] text-zinc-500 uppercase font-bold">No Image</div>
-                  )}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
-                    <Play size={16} fill="white" />
+            {episodes.map((episode: any) => {
+              const isActive = selectedEpisode === episode.episode_number;
+
+              return (
+                <button
+                  key={episode.id}
+                  onClick={() => {
+                    setSelectedEpisode(episode.episode_number);
+                    setShowPlayer(true);
+                  }}
+                  className={`flex gap-4 p-3 rounded-2xl border transition group text-left ${
+                    isActive
+                      ? "bg-red-600/20 border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.2)]"
+                      : "bg-white/5 border-white/5 hover:bg-white/10"
+                  }`}
+                >
+                  <div className="relative w-28 h-16 shrink-0 rounded-lg overflow-hidden bg-zinc-800">
+                    {episode.still_path ? (
+                      <img
+                        src={`https://image.tmdb.org/t/p/w300${episode.still_path}`}
+                        className={`w-full h-full object-cover transition-transform duration-500 ${
+                          isActive ? "scale-110" : "group-hover:scale-110"
+                        }`}
+                        alt={episode.name}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-[8px] text-zinc-500 uppercase font-bold">
+                        No Image
+                      </div>
+                    )}
+
+                    <div
+                      className={`absolute inset-0 flex items-center justify-center transition-opacity bg-black/40 ${
+                        isActive
+                          ? "opacity-100"
+                          : "opacity-0 group-hover:opacity-100"
+                      }`}
+                    >
+                      <Play
+                        size={16}
+                        fill="white"
+                        className={isActive ? "animate-pulse" : ""}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-col justify-center min-w-0">
-                  <h4 className="font-bold text-sm truncate">
-                    {episode.episode_number}. {episode.name}
-                  </h4>
-                  <p className="text-zinc-500 text-xs line-clamp-1 mt-1">
-                    {episode.overview || "No description available."}
-                  </p>
-                </div>
-              </button>
-            ))}
+
+                  <div className="flex flex-col justify-center min-w-0">
+                    <h4
+                      className={`font-bold text-sm truncate ${
+                        isActive ? "text-red-600" : "text-white"
+                      }`}
+                    >
+                      {episode.episode_number}. {episode.name}
+                    </h4>
+                    <p className="text-zinc-500 text-xs line-clamp-1 mt-1">
+                      {isActive
+                        ? "Now Playing..."
+                        : episode.overview || "No description available."}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
