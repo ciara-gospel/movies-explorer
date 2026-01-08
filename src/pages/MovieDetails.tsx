@@ -160,7 +160,7 @@ const MovieDetails = () => {
               className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white p-4 md:px-8 md:py-4 rounded-xl font-bold transition cursor-pointer shrink-0"
             >
               <Play fill="white" size={20} />
-              <span>Watch Now</span>
+              <span className="hidden md:block">Watch Now</span>
             </button>
 
             <button
@@ -171,7 +171,7 @@ const MovieDetails = () => {
                 size={20}
                 fill={isFavorite(movie.id) ? "white" : "none"}
               />
-              <span>
+              <span className="hidden md:block">
                 {isFavorite(movie.id) ? "In favorites" : "Add to favorites"}
               </span>
             </button>

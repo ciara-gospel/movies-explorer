@@ -76,18 +76,6 @@ const MainLayout = () => {
             <div className="text-zinc-500 text-xs text-center md:text-left">
               &copy; {new Date().getFullYear()} <span className="font-bold text-zinc-400">STREAM X</span>. 
             </div>
-            <div className="flex items-center gap-6">
-              <a href="https://www.themoviedb.org"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Power by TMDB">
-              <img 
-                src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" 
-                alt="TMDB Logo" 
-                className="h-3 opacity-50 hover:opacity-100 transition"
-              />
-              </a>
-            </div>
           </div>
         </div>
       </footer>
