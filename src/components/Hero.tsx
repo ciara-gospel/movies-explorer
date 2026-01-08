@@ -1,66 +1,132 @@
-import { Play, Plus, X } from 'lucide-react';
-import { useState } from 'react';
-import type { Movie } from '../types/movie';
+import { Play, Plus, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import type { Movie } from "../types/movie";
 
 interface HeroProps {
-  movie: Movie;
+  movies: Movie[];
 }
 
-const Hero = ({ movie }: HeroProps) => {
+const Hero = ({ movies }: HeroProps) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [showPlayer, setShowPlayer] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const featuredMovies = movies.slice(0, 20);
   const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
 
-  const videoUrl = `https://vidsrc.xyz/embed/movie/${movie.id}`;
+  useEffect(() => {
+    if (isPaused || showPlayer) return;
+    const interval = setInterval(() => {
+      handleNext();
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [currentIndex, isPaused, showPlayer, featuredMovies.length]);
+
+  const handleNext = () => {
+    setCurrentIndex((prev) =>
+      prev === featuredMovies.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) =>
+      prev === 0 ? featuredMovies.length - 1 : prev - 1
+    );
+  };
+
+  if (!featuredMovies.length) return null;
 
   return (
     <>
-      <div className="relative w-full h-150 mb-10 rounded-3xl overflow-hidden group">
-        <div className="absolute inset-0">
-          <img
-            src={`${IMAGE_BASE_URL}${movie.backdrop_path}`}
-            alt={movie.title}
-            className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-linear-to-r from-black via-black/50 to-transparent" />
-          <div className="absolute inset-0 bg-linear-to-t from-dark via-transparent to-transparent" />
-        </div>
-
-        <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16 max-w-2xl gap-4">
-          <span className="text-red-600 font-bold tracking-widest uppercase text-sm">Don't miss</span>
-          <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-tight">{movie.title}</h1>
-          <p className="text-gray-300 text-lg line-clamp-3">{movie.overview}</p>
-
-          <div className="flex items-center gap-4 mt-4">
-            <button 
-              onClick={() => setShowPlayer(true)}
-              className="flex items-center gap-2 bg-white text-black px-8 py-3 rounded-xl font-bold hover:bg-gray-200 transition cursor-pointer z-10"
-            >
-              <Play fill="black" size={20} /> Watch Now
-            </button>
-            <button className="flex items-center gap-2 bg-white/20 backdrop-blur-md text-white px-8 py-3 rounded-xl font-bold hover:bg-white/30 transition">
-              <Plus size={20} /> My List
-            </button>
+      <div
+        className="relative w-full h-[600px] md:h-[750px] mb-10 rounded-3xl overflow-hidden group bg-black"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        {featuredMovies.map((movie, index) => (
+          <div
+            key={movie.id}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
+            }`}
+          >
+            <img
+              src={`${IMAGE_BASE_URL}${movie.backdrop_path}`}
+              alt={movie.title}
+              className={`w-full h-full object-cover transform transition-transform duration-[10000ms] ${
+                index === currentIndex ? "scale-110" : "scale-100"
+              }`}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent" />
           </div>
+        ))}
+
+        <div className="absolute inset-0 z-20 flex flex-col justify-center px-8 md:px-16 max-w-3xl gap-4">
+          {featuredMovies.map(
+            (movie, index) =>
+              index === currentIndex && (
+                <div
+                  key={movie.id}
+                  className="space-y-4 animate-in fade-in slide-in-from-bottom-8 duration-1000"
+                >
+                  <span className="inline-block px-3 py-1 bg-red-600/20 border border-red-600/50 text-red-500 rounded-md text-xs font-bold tracking-widest uppercase">
+                    Trending Content
+                  </span>
+                  <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.1] drop-shadow-2xl">
+                    {movie.title}
+                  </h1>
+                  <p className="text-gray-300 text-lg md:text-xl line-clamp-3 max-w-xl leading-relaxed">
+                    {movie.overview}
+                  </p>
+
+                  <div className="flex items-center gap-3 md:gap-4 pt-4">
+                    <button
+                      onClick={() => setShowPlayer(true)}
+                      className="flex items-center justify-center gap-2 bg-white text-black p-4 md:px-8 md:py-4 rounded-2xl font-bold hover:bg-red-600 hover:text-white transition-all duration-300 transform hover:scale-105 cursor-pointer shrink-0"
+                    >
+                      <Play fill="currentColor" size={20} />
+                      <span className="hidden md:inline">Watch Now</span>
+                    </button>
+
+                    <button className="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-xl text-white p-4 md:px-8 md:py-4 rounded-2xl font-bold hover:bg-white/20 transition-all border border-white/10 shrink-0">
+                      <Plus size={20} />
+                      <span className="hidden md:inline">My List</span>
+                    </button>
+                  </div>
+                </div>
+              )
+          )}
         </div>
+
+        <button
+          onClick={handlePrev}
+          className="absolute left-6 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/20 hover:bg-red-600 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300"
+        >
+          <ChevronLeft size={32} />
+        </button>
+        <button
+          onClick={handleNext}
+          className="absolute right-6 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/20 hover:bg-red-600 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300"
+        >
+          <ChevronRight size={32} />
+        </button>
       </div>
 
       {showPlayer && (
-        <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/95 backdrop-blur-sm">
-          <button 
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/98 backdrop-blur-xl p-4 animate-in fade-in duration-300">
+          <button
             onClick={() => setShowPlayer(false)}
-            className="absolute top-10 right-10 text-white hover:text-red-600 transition p-2 bg-white/10 rounded-full"
+            className="absolute top-6 right-6 text-white hover:text-red-600 transition p-3 bg-white/5 rounded-full"
           >
             <X size={32} />
           </button>
-
-          <div className="w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-[0_0_50px_rgba(220,38,38,0.3)] border border-white/10">
+          <div className="w-full max-w-6xl aspect-video rounded-3xl overflow-hidden shadow-2xl shadow-red-600/10 border border-white/5">
             <iframe
-              src={videoUrl}
+              src={`https://vidsrc.xyz/embed/movie/${featuredMovies[currentIndex].id}`}
               className="w-full h-full"
               frameBorder="0"
-              scrolling="no"
               allowFullScreen
-              referrerPolicy="origin"
             ></iframe>
           </div>
         </div>

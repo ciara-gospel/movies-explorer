@@ -17,7 +17,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
         Previous
       </button>
       <span className="font-bold text-gray-400">
-        Page {currentPage} sur {Math.min(totalPages, 500)}
+        Page {currentPage} on {Math.min(totalPages, 500)}
       </span>
       <button
         disabled={currentPage === totalPages}

@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Bookmark, Home, Film, Tv, User, Menu, X } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Bookmark, Home, Film, Tv, Menu, X } from 'lucide-react';
 import SearchBar from './SearchBar';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -22,12 +23,28 @@ const Navbar = () => {
           Stream <span className="text-white">X</span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
-          {navLinks.map((link) => (
-            <Link key={link.name} to={link.path} className="hover:text-white flex items-center gap-2 transition">
-              {link.icon} {link.name}
-            </Link>
-          ))}
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium">
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.path;
+            return (
+              <Link 
+                key={link.name} 
+                to={link.path} 
+                className={`relative flex items-center gap-2 transition-all duration-300 py-1 ${
+                  isActive ? 'text-white' : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                <span className={`${isActive ? 'text-red-600' : ''}`}>
+                  {link.icon}
+                </span>
+                {link.name}
+                
+                {isActive && (
+                  <div className="absolute -bottom-[21px] left-0 right-0 h-[2px] bg-red-600 shadow-[0_0_10px_rgba(220,38,38,0.8)]" />
+                )}
+              </Link>
+            );
+          })}
         </div>
 
         <div className="flex items-center gap-3 sm:gap-6">
@@ -35,10 +52,6 @@ const Navbar = () => {
             <SearchBar />
           </div>
           
-          <div className="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center border border-white/10 cursor-pointer hover:bg-zinc-700 transition">
-            <User size={20} className="text-gray-300" />
-          </div>
-
           <button 
             onClick={toggleMenu}
             className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition"
@@ -62,17 +75,24 @@ const Navbar = () => {
           </div>
 
           <div className="flex flex-col gap-6">
-            {navLinks.map((link) => (
-              <Link 
-                key={link.name} 
-                to={link.path} 
-                onClick={toggleMenu}
-                className="text-2xl font-bold text-gray-400 hover:text-white flex items-center gap-4 transition border-b border-white/5 pb-4"
-              >
-                <span className="text-red-600">{link.icon}</span>
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path;
+              return (
+                <Link 
+                  key={link.name} 
+                  to={link.path} 
+                  onClick={toggleMenu}
+                  className={`text-2xl font-bold flex items-center gap-4 transition-all pb-4 border-b border-white/5 ${
+                    isActive ? 'text-white translate-x-2' : 'text-gray-400'
+                  }`}
+                >
+                  <span className={isActive ? 'text-red-600' : 'text-gray-600'}>
+                    {link.icon}
+                  </span>
+                  {link.name}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

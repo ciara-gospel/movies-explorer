@@ -3,31 +3,67 @@ import { movieService } from '../api/movieService';
 import type { Movie } from '../types/movie';
 import MovieGrid from '../components/MovieGrid';
 import Pagination from '../components/Pagination';
+import SortFilters from '../components/SortFilters';
+import MovieSkeleton from '../components/MovieSkeleton';
 
 const Series = () => {
   const [series, setSeries] = useState<Movie[]>([]);
   const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState('popularity.desc');
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSeries = async () => {
       setLoading(true);
-      const data = await movieService.getSeries(page);
-      setSeries(data.results.map((s: any) => ({ ...s, title: s.name })));
-      setTotalPages(data.total_pages);
-      setLoading(false);
+      try {
+        const data = await movieService.getSeries(page, sortBy);
+        
+        setSeries(data.results);
+        console.log("series list", data.results)
+        setTotalPages(Math.min(data.total_pages, 500));
+      } catch (error) {
+        console.error("Error fetching series:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchSeries();
-  }, [page]);
+  }, [page, sortBy]);
 
-  if (loading) return <div className="h-screen flex justify-center items-center font-bold">Series loading...</div>;
+  const handleSortChange = (newSort: string) => {
+    setSortBy(newSort);
+    setPage(1);
+  };
 
   return (
-    <div className="space-y-10">
-      <h1 className="text-4xl font-black">Explore <span className="text-brand">Series</span></h1>
-      <MovieGrid movies={series} />
-      <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+    <div className="pt-24 px-4 md:px-10 space-y-10 pb-20">
+      <div className="flex flex-col gap-6">
+        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">
+          Explore <span className="text-red-600">Series</span>
+        </h1>
+        
+        <SortFilters currentSort={sortBy} onSortChange={handleSortChange} />
+      </div>
+
+      {loading ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+          {[...Array(12)].map((_, i) => (
+            <MovieSkeleton key={i} />
+          ))}
+        </div>
+      ) : (
+        <>
+          <MovieGrid movies={series} />
+          <div className="pt-10">
+            <Pagination 
+              currentPage={page} 
+              totalPages={totalPages} 
+              onPageChange={setPage} 
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };
