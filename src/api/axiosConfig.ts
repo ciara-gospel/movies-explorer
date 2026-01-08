@@ -14,7 +14,7 @@ const api = axios.create({
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        console.error("URL appelée :", error.config?.url);
+        console.error("URL called :", error.config?.url);
         console.error("BaseURL :", error.config?.baseURL);
         return Promise.reject(error);
     }
