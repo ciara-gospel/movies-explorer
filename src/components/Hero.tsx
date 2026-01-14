@@ -1,4 +1,4 @@
-import { Play, Plus, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Play, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import type { Movie } from "../types/movie";
 
