@@ -10,7 +10,7 @@ export const movieService = {
   },
 
   searchMovies: async (query: string, page = 1): Promise<TMDBResponse> => {
-    const { data } = await api.get("search/movie", { params: { query, page } });
+    const { data } = await api.get("search/multi", { params: { query, page } });
     return data;
   },
 

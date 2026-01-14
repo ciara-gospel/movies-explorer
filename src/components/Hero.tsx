@@ -89,10 +89,10 @@ const Hero = ({ movies }: HeroProps) => {
                       <span className="hidden md:inline">Watch Now</span>
                     </button>
 
-                    <button className="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-xl text-white p-4 md:px-8 md:py-4 rounded-2xl font-bold hover:bg-white/20 transition-all border border-white/10 shrink-0">
+                    {/* <button className="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-xl text-white p-4 md:px-8 md:py-4 rounded-2xl font-bold hover:bg-white/20 transition-all border border-white/10 shrink-0">
                       <Plus size={20} />
                       <span className="hidden md:inline">My List</span>
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               )
