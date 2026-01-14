@@ -23,11 +23,14 @@ const Search = () => {
       setLoading(true);
       try {
         const data = await movieService.searchMovies(query, currentPage);
+
+        const filteredResults = data.results.filter((m: any) => 
+        (m.media_type === 'movie' || m.media_type === 'tv') && m.poster_path);
         
-        const transformedMovies = data.results.map((m: any) => ({
+        const transformedMovies = filteredResults.map((m: any) => ({
           ...m,
-          media_type: m.media_type || (m.name ? 'tv' : 'movie'),
-          title: m.title || m.name
+          media_type: m.media_type,
+          title: m.title || m.name || "Untitled"
         }));
 
         setResults({ 
