@@ -113,8 +113,7 @@ Screenshots
 (Add your screenshots in /public/screenshots and link them here)
 
 Live Demo
-[(Link to your Vercel/Netlify Deployment)
-](https://movies-explorer-umber.vercel.app/)
+https://movies-explorer-umber.vercel.app/
 5. Installation
 Clone the repository:
 git clone https://github.com/ciara-gospel/streamx-movie-explorer.git
