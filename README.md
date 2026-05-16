@@ -339,7 +339,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - [The Movie Database (TMDB)](https://www.themoviedb.org/) for the API
-- [Vidsrc](https://vidsrc.xyz/) for video embedding
+- [Vidsrc](https://vidsrc.pm/) for video embedding
 - [React](https://react.dev/) community for excellent documentation
 - All open-source contributors
 

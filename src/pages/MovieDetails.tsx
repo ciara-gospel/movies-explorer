@@ -25,8 +25,8 @@ const MovieDetails = () => {
   const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
 
   const videoUrl = isTV
-    ? `https://vidsrc.xyz/embed/tv/${id}/${selectedSeason}/${selectedEpisode}`
-    : `https://vidsrc.xyz/embed/movie/${id}`;
+    ? `https://vidsrc.pm/embed/tv/${id}/${selectedSeason}/${selectedEpisode}`
+    : `https://vidsrc.pm/embed/movie/${id}`;
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -141,7 +141,7 @@ const MovieDetails = () => {
               <Calendar size={20} />
               <span>
                 {new Date(
-                  movie.release_date || (movie as any).first_air_date || ""
+                  movie.release_date || (movie as any).first_air_date || "",
                 ).getFullYear()}
               </span>
             </div>
@@ -303,6 +303,8 @@ const MovieDetails = () => {
               frameBorder="0"
               allowFullScreen
               referrerPolicy="origin"
+              // On ajoute les autorisations pour les popups pour débloquer le script du lecteur
+              sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation allow-popups allow-popups-to-escape-sandbox"
             ></iframe>
           </div>
         </div>

@@ -24,13 +24,13 @@ const Hero = ({ movies }: HeroProps) => {
 
   const handleNext = () => {
     setCurrentIndex((prev) =>
-      prev === featuredMovies.length - 1 ? 0 : prev + 1
+      prev === featuredMovies.length - 1 ? 0 : prev + 1,
     );
   };
 
   const handlePrev = () => {
     setCurrentIndex((prev) =>
-      prev === 0 ? featuredMovies.length - 1 : prev - 1
+      prev === 0 ? featuredMovies.length - 1 : prev - 1,
     );
   };
 
@@ -95,7 +95,7 @@ const Hero = ({ movies }: HeroProps) => {
                     </button> */}
                   </div>
                 </div>
-              )
+              ),
           )}
         </div>
 
@@ -123,10 +123,12 @@ const Hero = ({ movies }: HeroProps) => {
           </button>
           <div className="w-full max-w-6xl aspect-video rounded-3xl overflow-hidden shadow-2xl shadow-red-600/10 border border-white/5">
             <iframe
-              src={`https://vidsrc.xyz/embed/movie/${featuredMovies[currentIndex].id}`}
+              src={`https://vidsrc.pm/embed/movie/${featuredMovies[currentIndex].id}`}
               className="w-full h-full"
               frameBorder="0"
               allowFullScreen
+              referrerPolicy="origin"
+              sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation allow-popups allow-popups-to-escape-sandbox"
             ></iframe>
           </div>
         </div>
